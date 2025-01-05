@@ -1,15 +1,45 @@
-// components/bills/bill-preview.tsx
-import { Card } from "@/components/ui/card"
+"use client";
+import React from "react";
+import { Card } from "@/components/ui/card";
+import { PDFViewer } from "@react-pdf/renderer";
+import { BillPDF } from "./bill-pdf"; // Using the PDF component we created earlier
 
-export function BillPreview() {
+interface BillPreviewProps {
+  companyInfo: {
+    name: string;
+    address: string;
+    phone: string;
+  };
+  freelancerInfo: {
+    name: string;
+    address: string;
+    phone: string;
+    registrationNumber: string;
+  };
+  bankInfo: {
+    bankName: string;
+    branchName: string;
+    accountType: string;
+    accountNumber: string;
+    accountHolder: string;
+  };
+  workDetails: Array<{
+    date: string;
+    description: string;
+    hours: number;
+    rate: number;
+  }>;
+  totalAmount: number;
+}
+
+export function BillPreview(props: BillPreviewProps) {
   return (
     <div className="w-1/2 p-4">
-      <Card className="h-full bg-white p-6">
-        <div className="text-lg font-semibold mb-4">PDF Preview</div>
-        <div className="h-full border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-          <p className="text-gray-500">PDF preview will appear here</p>
-        </div>
+      <Card className="h-full bg-white">
+        <PDFViewer width="100%" height="100%" className="rounded-lg">
+          <BillPDF {...props} />
+        </PDFViewer>
       </Card>
     </div>
-  )
+  );
 }
