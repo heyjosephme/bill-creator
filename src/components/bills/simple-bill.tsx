@@ -14,6 +14,21 @@ Font.register({
 });
 
 // Styles definition as created earlier
+// Helper function to get weekday in Japanese
+const getJapaneseWeekday = (dateStr) => {
+  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+  const date = new Date(dateStr);
+  return weekdays[date.getDay()];
+};
+
+// Helper function to calculate working hours
+const calculateHours = (startTime, endTime) => {
+  const [startHour, startMin] = startTime.split(":").map(Number);
+  const [endHour, endMin] = endTime.split(":").map(Number);
+  const hours = endHour - startHour + (endMin - startMin) / 60;
+  return Number(hours.toFixed(2));
+};
+
 const styles = StyleSheet.create({
   page: {
     padding: 40,
@@ -145,9 +160,56 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
     color: "#4a4a4a",
   },
+  workLogTable: {
+    width: "100%",
+    marginBottom: 30,
+    marginTop: 20,
+  },
+  workLogHeader: {
+    backgroundColor: "#f0f0f0",
+    borderBottom: "1pt solid #dee2e6",
+    borderTop: "1pt solid #dee2e6",
+  },
+  workLogRow: {
+    flexDirection: "row",
+    borderBottom: "1pt solid #eee",
+    minHeight: 30,
+    alignItems: "center",
+  },
+  workLogCell: {
+    fontSize: 9,
+    padding: "4pt 2pt",
+    color: "#4a4a4a",
+  },
+  dateCol: { width: "10%" },
+  weekdayCol: { width: "5%" },
+  timeCol: { width: "10%" },
+  detailsCol: { width: "35%" },
+  locationCol: { width: "15%" },
+  hoursCol: { width: "15%" },
+  totalRow: {
+    flexDirection: "row",
+    borderTop: "2pt solid #333",
+    minHeight: 30,
+    alignItems: "center",
+  },
+  notes: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 4,
+  },
+  notesTitle: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  notesText: {
+    fontSize: 10,
+    lineHeight: 1.4,
+  },
 });
 
-// Sample static data (same as your original)
 const sampleData = {
   billNumber: "INV-001",
   date: "2024-01-05",
@@ -179,6 +241,34 @@ const sampleData = {
       hours: 8,
       rate: 5000,
     },
+  ],
+  workLog: [
+    {
+      date: "2024-01-01",
+      startTime: "09:00",
+      endTime: "18:00",
+      details: "フロントエンド開発、APIの実装",
+      location: "リモート",
+    },
+    {
+      date: "2024-01-02",
+      startTime: "09:30",
+      endTime: "18:30",
+      details: "バグ修正、ミーティング",
+      location: "オフィス",
+    },
+    {
+      date: "2024-01-03",
+      startTime: "09:00",
+      endTime: "17:30",
+      details: "テスト作成、コードレビュー",
+      location: "リモート",
+    },
+  ],
+  notes: [
+    "1. 休憩時間（1時間）は就業時間から除外済み",
+    "2. リモートワークは事前に承認済み",
+    "3. 時間外作業は案件マネージャーの承認済み",
   ],
 };
 
@@ -297,7 +387,7 @@ export const SimpleBillPDF = () => {
 
         {/* Bank Information */}
         <View style={styles.bankInfo}>
-          <Text style={styles.bankInfoTitle}>お振込先</Text>
+          <Text style={styles.bankInfoTitle}>振込先</Text>
           <Text style={styles.bankInfoText}>
             {sampleData.bankDetails.bankName} {sampleData.bankDetails.branch}
           </Text>
@@ -309,6 +399,86 @@ export const SimpleBillPDF = () => {
             口座名義: {sampleData.bankDetails.accountHolder}
           </Text>
           <Text style={styles.bankInfoText}>支払期日　2025年1月31日</Text>
+        </View>
+
+        {/* Notes Section */}
+        <View style={styles.notes}>
+          <Text style={styles.notesTitle}>備考</Text>
+          {sampleData.notes.map((note, index) => (
+            <Text key={index} style={styles.notesText}>
+              {note}
+            </Text>
+          ))}
+        </View>
+
+        {/* Work Log Title */}
+        <Text
+          style={[styles.bankInfoTitle, { marginTop: 30, marginBottom: 10 }]}
+        >
+          作業詳細
+        </Text>
+
+        {/* Work Log Table */}
+        <View style={styles.workLogTable}>
+          <View style={[styles.workLogRow, styles.workLogHeader]}>
+            <Text style={[styles.workLogCell, styles.dateCol]}>日付</Text>
+            <Text style={[styles.workLogCell, styles.weekdayCol]}>曜日</Text>
+            <Text style={[styles.workLogCell, styles.timeCol]}>開始</Text>
+            <Text style={[styles.workLogCell, styles.timeCol]}>終了</Text>
+            <Text style={[styles.workLogCell, styles.detailsCol]}>
+              作業内容
+            </Text>
+            <Text style={[styles.workLogCell, styles.locationCol]}>
+              勤務形態
+            </Text>
+            <Text style={[styles.workLogCell, styles.hoursCol]}>就業時間</Text>
+          </View>
+
+          {sampleData.workLog.map((item, index) => {
+            const workingHours = calculateHours(item.startTime, item.endTime);
+            return (
+              <View key={index} style={styles.workLogRow}>
+                <Text style={[styles.workLogCell, styles.dateCol]}>
+                  {item.date}
+                </Text>
+                <Text style={[styles.workLogCell, styles.weekdayCol]}>
+                  {getJapaneseWeekday(item.date)}
+                </Text>
+                <Text style={[styles.workLogCell, styles.timeCol]}>
+                  {item.startTime}
+                </Text>
+                <Text style={[styles.workLogCell, styles.timeCol]}>
+                  {item.endTime}
+                </Text>
+                <Text style={[styles.workLogCell, styles.detailsCol]}>
+                  {item.details}
+                </Text>
+                <Text style={[styles.workLogCell, styles.locationCol]}>
+                  {item.location}
+                </Text>
+                <Text style={[styles.workLogCell, styles.hoursCol]}>
+                  {workingHours}h
+                </Text>
+              </View>
+            );
+          })}
+
+          {/* Total Hours Row */}
+          <View style={styles.totalRow}>
+            <Text style={[styles.workLogCell, { width: "85%" }]}>
+              合計就業時間
+            </Text>
+            <Text style={[styles.workLogCell, styles.hoursCol]}>
+              {sampleData.workLog
+                .reduce(
+                  (total, item) =>
+                    total + calculateHours(item.startTime, item.endTime),
+                  0,
+                )
+                .toFixed(2)}
+              h
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
