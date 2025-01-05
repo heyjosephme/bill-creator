@@ -1,5 +1,9 @@
-import { BillCreator } from "@/components/bills/bill-creator";
+import PDFViewerWrapper from "@/components/bills/PDFViewerWrapper";
 
-export default function Home() {
-  return <BillCreator />;
+export default function YourComponent() {
+  return (
+    <div>
+      <PDFViewerWrapper />
+    </div>
+  );
 }
