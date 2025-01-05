@@ -1,0 +1,10 @@
+- company: company-a
+  date: 2024-01-15
+  hours: 8
+  description: Frontend development
+  rate: 100
+- company: company-a
+  date: 2024-01-16
+  hours: 6
+  description: API integration
+  rate: 100

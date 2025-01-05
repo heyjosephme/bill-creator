@@ -1,0 +1,9 @@
+name: John Doe
+address: 123 Main St
+city: San Francisco
+email: john@example.com
+phone: (555) 123-4567
+bank:
+  name: Bank of America
+  account: "1234567890"
+  routing: "987654321"
