@@ -1,19 +1,32 @@
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import React from "react";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Font,
+} from "@react-pdf/renderer";
+
+Font.register({
+  family: "Noto Sans JP",
+  src: "fonts/NotoSansJP-Light.ttf",
+});
 
 // Create styles
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontFamily: 'Helvetica',
+    fontFamily: "Noto Sans JP",
+    //fontFamily: "Helvetica",
   },
   title: {
     fontSize: 24,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   header: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   leftColumn: {
@@ -21,7 +34,7 @@ const styles = StyleSheet.create({
   },
   rightColumn: {
     flex: 1,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   text: {
     fontSize: 12,
@@ -31,14 +44,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tableRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
-    borderBottomStyle: 'solid',
+    borderBottomColor: "#000",
+    borderBottomStyle: "solid",
     paddingVertical: 5,
   },
   tableHeader: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   tableCell: {
     flex: 1,
@@ -47,8 +60,8 @@ const styles = StyleSheet.create({
   bankInfo: {
     marginTop: 30,
     padding: 10,
-    backgroundColor: '#f6f6f6',
-  }
+    backgroundColor: "#f6f6f6",
+  },
 });
 
 // Sample static data
@@ -58,34 +71,34 @@ const sampleData = {
   clientCompany: {
     name: "株式会社サンプル",
     address: "東京都渋谷区...",
-    phoneNumber: "03-xxxx-xxxx"
+    phoneNumber: "03-xxxx-xxxx",
   },
   freelancer: {
     name: "山田 太郎",
     address: "東京都新宿区...",
-    phoneNumber: "090-xxxx-xxxx"
+    phoneNumber: "090-xxxx-xxxx",
   },
   bankDetails: {
     bankName: "サンプル銀行",
     branch: "渋谷支店",
     accountType: "普通",
     accountNumber: "1234567",
-    accountHolder: "ヤマダ タロウ"
+    accountHolder: "ヤマダ タロウ",
   },
   workItems: [
     {
       date: "2024-01-01",
       description: "システム開発",
       hours: 8,
-      rate: 5000
+      rate: 5000,
     },
     {
       date: "2024-01-02",
       description: "テスト作業",
       hours: 6,
-      rate: 5000
-    }
-  ]
+      rate: 5000,
+    },
+  ],
 };
 
 export const SimpleBillPDF = () => (
@@ -100,13 +113,17 @@ export const SimpleBillPDF = () => (
         <View style={styles.leftColumn}>
           <Text style={styles.text}>{sampleData.clientCompany.name} 御中</Text>
           <Text style={styles.text}>{sampleData.clientCompany.address}</Text>
-          <Text style={styles.text}>TEL: {sampleData.clientCompany.phoneNumber}</Text>
+          <Text style={styles.text}>
+            TEL: {sampleData.clientCompany.phoneNumber}
+          </Text>
         </View>
         {/* Freelancer Info - Right */}
         <View style={styles.rightColumn}>
           <Text style={styles.text}>{sampleData.freelancer.name}</Text>
           <Text style={styles.text}>{sampleData.freelancer.address}</Text>
-          <Text style={styles.text}>TEL: {sampleData.freelancer.phoneNumber}</Text>
+          <Text style={styles.text}>
+            TEL: {sampleData.freelancer.phoneNumber}
+          </Text>
         </View>
       </View>
 
@@ -125,7 +142,9 @@ export const SimpleBillPDF = () => (
             <Text style={styles.tableCell}>{item.description}</Text>
             <Text style={styles.tableCell}>{item.hours}h</Text>
             <Text style={styles.tableCell}>¥{item.rate.toLocaleString()}</Text>
-            <Text style={styles.tableCell}>¥{(item.hours * item.rate).toLocaleString()}</Text>
+            <Text style={styles.tableCell}>
+              ¥{(item.hours * item.rate).toLocaleString()}
+            </Text>
           </View>
         ))}
       </View>
@@ -134,16 +153,26 @@ export const SimpleBillPDF = () => (
       <View style={[styles.tableRow, { marginTop: 10 }]}>
         <Text style={[styles.tableCell, { flex: 4 }]}>合計</Text>
         <Text style={styles.tableCell}>
-          ¥{sampleData.workItems.reduce((sum, item) => sum + (item.hours * item.rate), 0).toLocaleString()}
+          ¥
+          {sampleData.workItems
+            .reduce((sum, item) => sum + item.hours * item.rate, 0)
+            .toLocaleString()}
         </Text>
       </View>
 
       {/* Bank Information */}
       <View style={styles.bankInfo}>
         <Text style={styles.text}>お振込先</Text>
-        <Text style={styles.text}>{sampleData.bankDetails.bankName} {sampleData.bankDetails.branch}</Text>
-        <Text style={styles.text}>{sampleData.bankDetails.accountType} {sampleData.bankDetails.accountNumber}</Text>
-        <Text style={styles.text}>口座名義: {sampleData.bankDetails.accountHolder}</Text>
+        <Text style={styles.text}>
+          {sampleData.bankDetails.bankName} {sampleData.bankDetails.branch}
+        </Text>
+        <Text style={styles.text}>
+          {sampleData.bankDetails.accountType}{" "}
+          {sampleData.bankDetails.accountNumber}
+        </Text>
+        <Text style={styles.text}>
+          口座名義: {sampleData.bankDetails.accountHolder}
+        </Text>
       </View>
     </Page>
   </Document>
