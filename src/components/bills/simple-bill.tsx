@@ -14,10 +14,11 @@ Font.register({
 });
 
 export const SimpleBillPDF = () => {
-  const totalAmount = sampleData.workItems.reduce(
-    (sum, item) => sum + item.hours * item.rate,
+  const totalHours = sampleData.workLog.reduce(
+    (total, item) => total + calculateHours(item.startTime, item.endTime),
     0,
   );
+  const totalAmount = totalHours * sampleData.freelancer.hourlyRate;
   const tax = calculateTax(totalAmount);
   const finalAmount = totalAmount + tax;
 
@@ -91,14 +92,14 @@ export const SimpleBillPDF = () => {
                 {item.description}
               </Text>
               <Text style={[styles.tableCell, styles.colQuantity]}>
-                {item.hours}
+                {totalHours}
               </Text>
               <Text style={[styles.tableCell, styles.colUnit]}>時間</Text>
               <Text style={[styles.tableCell, styles.colPrice]}>
                 ¥{item.rate.toLocaleString()}
               </Text>
               <Text style={[styles.tableCell, styles.colAmount]}>
-                ¥{(item.hours * item.rate).toLocaleString()}
+                ¥{totalAmount.toLocaleString()}
               </Text>
             </View>
           ))}
@@ -137,7 +138,9 @@ export const SimpleBillPDF = () => {
           <Text style={styles.bankInfoText}>
             口座名義: {sampleData.bankDetails.accountHolder}
           </Text>
-          <Text style={styles.bankInfoText}>支払期日　2025年1月31日</Text>
+          <Text style={styles.bankInfoText}>
+            支払期日　{sampleData.bankDetails.deadline}
+          </Text>
         </View>
 
         {/* Notes Section */}
@@ -208,14 +211,7 @@ export const SimpleBillPDF = () => {
               合計就業時間
             </Text>
             <Text style={[styles.workLogCell, styles.hoursCol]}>
-              {sampleData.workLog
-                .reduce(
-                  (total, item) =>
-                    total + calculateHours(item.startTime, item.endTime),
-                  0,
-                )
-                .toFixed(2)}
-              h
+              {totalHours.toFixed(2)}h
             </Text>
           </View>
         </View>

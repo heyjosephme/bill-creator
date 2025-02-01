@@ -14,6 +14,7 @@ export const sampleData = {
     address1: "東京都新宿区",
     address2: "ZZZ YYY XXX",
     phoneNumber: "090-xxxx-xxxx",
+    hourlyRate: 5000,
   },
   bankDetails: {
     bankName: "サンプル銀行",
@@ -21,13 +22,14 @@ export const sampleData = {
     accountType: "普通",
     accountNumber: "1234567",
     accountHolder: "ヤマダ タロウ",
+    deadline: "2025年2月28日",
   },
   workItems: [
     {
       date: "2024-01-01",
       description: "システム開発",
-      hours: 8,
-      rate: 5000,
+      hours: 8, // CUSTOM INPUT OR BASED ON WORK LOGS?
+      rate: 5000, // CHANGE TO YOUR HOURLY RATE
     },
   ],
   workLog: [
